@@ -1,0 +1,15 @@
+# Maven
+target/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local config (if you add later)
+config.properties
