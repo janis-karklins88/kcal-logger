@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TodayRepository {
+
+  public static record FoodEntry(int kcal, String label) {}
 
   public int getBaselineKcal() throws Exception {
     try (Connection c = Db.getConnection();
@@ -41,5 +45,28 @@ public class TodayRepository {
       rs.next();
       return rs.getInt("total");
     }
+  }
+
+  public List<FoodEntry> getTodayFoodEntries(LocalDate date) throws Exception {
+    List<FoodEntry> entries = new ArrayList<>();
+
+    try (Connection c = Db.getConnection();
+        PreparedStatement ps = c.prepareStatement(
+            "SELECT COALESCE(kcal, 0) AS kcal, label " +
+            "FROM food_entry " +
+            "WHERE date = ? " +
+            "ORDER BY id DESC")) {
+
+      ps.setString(1, date.toString());
+      ResultSet rs = ps.executeQuery();
+
+      while (rs.next()) {
+        int kcal = rs.getInt("kcal");
+        String label = rs.getString("label");
+        entries.add(new FoodEntry(kcal, label));
+      }
+    }
+
+    return entries;
   }
 }
