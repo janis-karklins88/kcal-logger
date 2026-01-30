@@ -12,4 +12,8 @@ public class Db {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
+
+    public static String getDbPath() {
+        return DB_URL.replaceFirst("^jdbc:sqlite:", "");
+    }
 }

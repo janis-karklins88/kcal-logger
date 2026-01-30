@@ -11,19 +11,6 @@ public class TodayRepository {
 
   public static record FoodEntry(int kcal, String label) {}
 
-  public int getBaselineKcal() throws Exception {
-    try (Connection c = Db.getConnection();
-        PreparedStatement ps = c.prepareStatement(
-            "SELECT value FROM settings WHERE key = 'baseline_kcal'")) {
-
-      ResultSet rs = ps.executeQuery();
-      if (!rs.next()) {
-        throw new IllegalStateException("baseline_kcal not found");
-      }
-      return Integer.parseInt(rs.getString("value"));
-    }
-  }
-
   public int getActiveKcal(LocalDate date) throws Exception {
     try (Connection c = Db.getConnection();
         PreparedStatement ps = c.prepareStatement(
